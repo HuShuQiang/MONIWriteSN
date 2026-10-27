@@ -63,6 +63,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectResultView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectResultView.Designer.cs">
+      <DependentUpon>SelectResultView.cs</DependentUpon>
+    </Compile>
     <Compile Include="SetupView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +91,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SelectResultView.resx">
+      <DependentUpon>SelectResultView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SetupView.resx">
       <DependentUpon>SetupView.cs</DependentUpon>
     </EmbeddedResource>

@@ -18,13 +18,12 @@ namespace OMNI写号辅助工具
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
         private bool IsRunning = false;
-        private int LastWriteNum = 0;
-        private int NewWriteNum = 0;
+        private int WriteNum = 0;
         private Timer timer;
         private bool IsUpdateing = false;
         private bool IsWriteing = false;
         private InputView inputView;
-
+        private SelectResultView selectResultView;
         public MainView()
         {
             InitializeComponent();
@@ -113,29 +112,60 @@ namespace OMNI写号辅助工具
 
                     inputView = null;
                 }
-                if (IsUpdateing & !IsWriteing)
+                if (IsUpdateing & !IsWriteing & selectResultView == null)
                 {
-                    var cfg = SimpleCfg.Read(Properties.Settings.Default.CheckFilePath);
-                    
-                    LastWriteNum = NewWriteNum;
-                    NewWriteNum = int.Parse(cfg.ContainsKey("num") ? cfg["num"] : "0");
-                    if(LastWriteNum != 0)
+                    selectResultView = new SelectResultView();
+                    DialogResult result = selectResultView.ShowDialog();
+                    if (result == DialogResult.Yes)
                     {
-                        if (LastWriteNum < NewWriteNum)
+                        IsWriteing = true;
+                        IsUpdateing = false;
+                        ShowLog($"{Properties.Settings.Default.InputValue}写号成功！");
+                        WriteNum++;
+                        ShowLog($"写号成功！第{WriteNum}次！");
+                        if (Properties.Settings.Default.IsUploadStation)
                         {
-                            IsWriteing = true;
-                            IsUpdateing = false;
-                            ShowLog($"{Properties.Settings.Default.InputValue}写号成功！");
-                            ShowLog($"写号成功！第{NewWriteNum}次！");
-                            if (Properties.Settings.Default.IsUploadStation)
-                            {
-                                UploadStation(true);
-                            }
-                            
-                            Properties.Settings.Default.InputValue = "";
+                            UploadStation(true);
                         }
+
+                        Properties.Settings.Default.InputValue = "";
                     }
-                    
+                    else
+                    {
+                        IsWriteing = true;
+                        IsUpdateing = false;
+                        ShowLog($"{Properties.Settings.Default.InputValue}烧录失败！");
+                        //ShowLog($"烧录成功！第{NewWriteNum}次！");
+                        if (Properties.Settings.Default.IsUploadStation)
+                        {
+                            UploadStation(false);
+                        }
+
+                        Properties.Settings.Default.InputValue = "";
+                    }
+
+                    selectResultView = null;
+                    //var cfg = SimpleCfg.Read(Properties.Settings.Default.CheckFilePath);
+
+                    //LastWriteNum = NewWriteNum;
+                    //NewWriteNum = int.Parse(cfg.ContainsKey("num") ? cfg["num"] : "0");
+                    //if(LastWriteNum != 0)
+                    //{
+                    //    if (LastWriteNum < NewWriteNum)
+                    //    {
+                    //        IsWriteing = true;
+                    //        IsUpdateing = false;
+                    //        ShowLog($"{Properties.Settings.Default.InputValue}写号成功！");
+                    //        ShowLog($"写号成功！第{NewWriteNum}次！");
+                    //        if (Properties.Settings.Default.IsUploadStation)
+                    //        {
+                    //            UploadStation(true);
+                    //        }
+
+                    //        Properties.Settings.Default.InputValue = "";
+                    //    }
+                    //}
+
                 }
             }
         }

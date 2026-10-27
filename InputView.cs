@@ -34,10 +34,10 @@ namespace OMNI写号辅助工具
                     JObject Data = JsonConvert.DeserializeObject<JObject>(result);
                     if (Data["resultCode"].ToString() == "0")
                     {
+                        Properties.Settings.Default.InputValue = InputValue.Text;
+                        Properties.Settings.Default.Save();
                         if (CheckStation())
                         {
-                            Properties.Settings.Default.InputValue = InputValue.Text;
-                            Properties.Settings.Default.Save();
                             DialogResult = DialogResult.OK;
                             Close();
                         }
